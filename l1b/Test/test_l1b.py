@@ -100,8 +100,6 @@ def recreate_equalization_plot(file_eq, file_no_eq, file_isrf, alt_line_idx=50):
     # Show the plot
     plt.show()
 
-
-
 # ---------------------------------------------------------------------------------------------
 
 # Run validation
