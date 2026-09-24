@@ -99,6 +99,17 @@ class mtf:
 
         fAlt = np.arange(-1 / (2 * w), 1 / (2 * w) - eps, fstepAlt)
         fAct = np.arange(-1 / (2 * w), 1 / (2 * w) - eps, fstepAct)
+
+        [fAltxx, fActxx] = np.meshgrid(fAlt, fAct, indexing='ij')  # Please use ‘ij’ indexing or you will get the transpose
+        f2D = np.sqrt(fAltxx * fAltxx + fActxx * fActxx)
+
+        f_cutoff = D / (lambd * focal)
+
+        fn2D = f2D/(1/w)
+        fr2D = f2D/f_cutoff
+        fnAct = fAct/(1/w)
+        fnAlt = fAlt/(1/w)
+
         return fn2D, fr2D, fnAct, fnAlt
 
     def mtfDiffract(self,fr2D):
