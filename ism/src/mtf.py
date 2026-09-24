@@ -92,6 +92,13 @@ class mtf:
         :return fnAlt: 1D normalised frequencies 2D ALT (f/(1/w))
         """
         #TODO
+        fstepAlt = 1 / nlines / w
+        fstepAct = 1 / ncolumns / w
+
+        eps = 1e-6
+
+        fAlt = np.arange(-1 / (2 * w), 1 / (2 * w) - eps, fstepAlt)
+        fAct = np.arange(-1 / (2 * w), 1 / (2 * w) - eps, fstepAct)
         return fn2D, fr2D, fnAct, fnAlt
 
     def mtfDiffract(self,fr2D):
