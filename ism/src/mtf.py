@@ -119,7 +119,15 @@ class mtf:
         :return: diffraction MTF
         """
         #TODO
-        Hdiff = (2/np.pi)*(((np.arccos(fr2D)))-(fr2D*(1-fr2D**2)**(1/2)))
+        @np.vectorize
+        def scalar_arccos(val):
+            return np.arccos(val)
+
+        arccos_vec = scalar_arccos(fr2D)
+        Hdiff = (2 / np.pi) * (arccos_vec - (fr2D * (1 - fr2D ** 2) ** (1 / 2)))
+
+        # Apply the required check
+        Hdiff[fr2D * fr2D > 1] = 0
 
         return Hdiff
 
@@ -135,8 +143,10 @@ class mtf:
         """
         #TODO
         x = np.pi * defocus * fr2D * (1 - fr2D)
-        J = (x/2) - (x**3/16) + (x**5/384) - (x**7/18432)
-        Hdefoc = 2*J / x
+
+        # Use scipy.special.j1:
+        Hdefoc = np.where(x == 0, 1.0, 2 * j1(x) / x)
+
         return Hdefoc
 
     def mtfWfeAberrations(self, fr2D, lambd, kLF, wLF, kHF, wHF):
@@ -177,7 +187,12 @@ class mtf:
         :return: Smearing MTF
         """
         #TODO
-        Hsmear = np.sinc(ksmear * fnAlt)
+
+        # Calculate 1D MTF in the ALT direction
+        Hsmear_1d = np.sinc(ksmear * fnAlt)
+
+        # Repeat it in the ACT direction using np.tile
+        Hsmear = np.tile(Hsmear_1d[:, np.newaxis], (1, ncolumns))
         return Hsmear
 
     def mtfMotion(self, fn2D, kmotion):
