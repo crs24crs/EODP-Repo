@@ -155,6 +155,15 @@ class detectionPhase(initIsm):
         :return: TOA after adding PRNU [e-]
         """
         #TODO
+        #Get the number of columns in the ACT direction
+        ncolumns = toa.shape[1]
+
+        # Model PRNU for each pixel in the ACT direction using a standard normal distribution
+        prnu_act = np.random.normal(loc=0.0, scale=1.0, size=ncolumns) * kprnu
+
+        # Apply the error to the TOA image
+        toa = toa * (1 + prnu_act)
+
         return toa
 
 
