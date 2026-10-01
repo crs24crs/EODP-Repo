@@ -105,19 +105,19 @@ class opticalPhase(initIsm):
         :return: TOA image in irradiances [mW/m2]
         """
         # TODO
-        # 1. Do an fft2 of the TOA to convert to the frequency domain
+        # Do an fft2 of the TOA to convert to the frequency domain
         GE = fft2(toa)
 
-        # 2, 3. Shift the system MTF and multiply with the frequency-domain TOA
+        # Shift the system MTF and multiply with the frequency domain TOA
         Hsys_shifted = fftshift(Hsys)
         GE_filtered = GE * Hsys_shifted
 
-        # 4. Go back to the spatial domain with an ifft2
+        # Go back to the spatial domain
         toa_ft = ifft2(GE_filtered)
 
         # Check the imaginary part and keep only the real part
         if np.max(np.abs(np.imag(toa_ft))) > 1e-6:
-            self.logger.warning("Non-zero imaginary part detected after inverse FFT.")
+            self.logger.warning("Non-zero imaginary part detected.")
 
         toa_ft = np.real(toa_ft)
         return toa_ft
