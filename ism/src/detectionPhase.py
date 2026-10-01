@@ -124,13 +124,14 @@ class detectionPhase(initIsm):
         :return: toa in electrons
         """
         #TODO
-        #Convert from photons to electrons with QE
+        # Convert from photons to electrons with QE
         toae = toa * QE
 
-        # Check that the number of electrons is lower than the FWC
+        # Check and clip values so none exceed the FWC
         if hasattr(self.ismConfig, 'FWC') and self.ismConfig.FWC is not None:
             if np.any(toae > self.ismConfig.FWC):
-                self.logger.warning("Warning: Some pixels exceed the Full Well Capacity (FWC) limit.")
+                self.logger.warning("Warning: Some pixels exceed the FWC. Limiting those values.")
+            toae = np.clip(toae, 0, self.ismConfig.FWC)
 
         return toae
 
@@ -145,6 +146,7 @@ class detectionPhase(initIsm):
         :return: toa in e- including bad & dead pixels
         """
         #TODO
+
         return toa
 
     def prnu(self, toa, kprnu):
