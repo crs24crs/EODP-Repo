@@ -225,5 +225,58 @@ class mtf:
         :return: N/A
         """
         #TODO
+        self.logger.info("Plotting System MTF cuts (ACT and ALT)")
+
+        id_alt = int(nlines / 2)
+        id_act = int(ncolumns / 2)
+
+        # Make sure the output directory exists
+        os.makedirs(directory, exist_ok=True)
+
+        # -------------------------------------------------------------
+        # 1. Plot ACT Slice
+        # -------------------------------------------------------------
+        plt.figure(figsize=(10, 6))
+        plt.plot(fnAct, Hdiff[id_alt, :], label='Diffraction MTF', linewidth=1)
+        plt.plot(fnAct, Hdefoc[id_alt, :], label='Defocus MTF', linewidth=1)
+        plt.plot(fnAct, Hwfe[id_alt, :], label='WFE Aberrations MTF', linewidth=1)
+        plt.plot(fnAct, Hdet[id_alt, :], label='Detector MTF', linewidth=1)
+        plt.plot(fnAct, Hsmear[id_alt, :], label='Smearing MTF', linewidth=1)
+        plt.plot(fnAct, Hmotion[id_alt, :], label='Motion blur MTF', linewidth=1)
+        plt.plot(fnAct, Hsys[id_alt, :], label='System MTF', color='black', linewidth=2)
+        plt.axvline(x=0.5, color='black', linestyle='--', label='f Nyquist', linewidth=1.5)
+
+        plt.title(f'System MTF - slice ACT ({band})')
+        plt.xlabel('Spatial frequencies f/(1/w) [-]')
+        plt.ylabel('MTF')
+        plt.grid(True, linestyle='-', alpha=0.7)
+        plt.legend(loc='lower left', fontsize='small')
+
+        save_path_act = os.path.join(directory, f'system_mtf_act_{band}.png')
+        plt.savefig(save_path_act, bbox_inches='tight', dpi=300)
+        plt.close()
+
+        # -------------------------------------------------------------
+        # 2. Plot ALT Slice
+        # -------------------------------------------------------------
+        plt.figure(figsize=(10, 6))
+        plt.plot(fnAlt, Hdiff[:, id_act], label='Diffraction MTF', linewidth=1)
+        plt.plot(fnAlt, Hdefoc[:, id_act], label='Defocus MTF', linewidth=1)
+        plt.plot(fnAlt, Hwfe[:, id_act], label='WFE Aberrations MTF', linewidth=1)
+        plt.plot(fnAlt, Hdet[:, id_act], label='Detector MTF', linewidth=1)
+        plt.plot(fnAlt, Hsmear[:, id_act], label='Smearing MTF', linewidth=1)
+        plt.plot(fnAlt, Hmotion[:, id_act], label='Motion blur MTF', linewidth=1)
+        plt.plot(fnAlt, Hsys[:, id_act], label='System MTF', color='black', linewidth=2)
+        plt.axvline(x=0.5, color='black', linestyle='--', label='f Nyquist', linewidth=1.5)
+
+        plt.title(f'System MTF - slice ALT ({band})')
+        plt.xlabel('Spatial frequencies f/(1/w) [-]')
+        plt.ylabel('MTF')
+        plt.grid(True, linestyle='-', alpha=0.7)
+        plt.legend(loc='lower left', fontsize='small')
+
+        save_path_alt = os.path.join(directory, f'system_mtf_alt_{band}.png')
+        plt.savefig(save_path_alt, bbox_inches='tight', dpi=300)
+        plt.close()
 
 
