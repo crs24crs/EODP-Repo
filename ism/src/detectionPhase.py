@@ -124,7 +124,7 @@ class detectionPhase(initIsm):
         :return: toa in electrons
         """
         #TODO
-        # Convert from photons to electrons with QE
+        #Convert from photons to electrons with QE
         toae = toa * QE
 
         # Check and clip values so none exceed the FWC
@@ -146,6 +146,32 @@ class detectionPhase(initIsm):
         :return: toa in e- including bad & dead pixels
         """
         #TODO
+        toa_act = toa.shape[1]
+
+        # Calculate the number of pixels affected
+        n_bad = int(toa_act * bad_pix / 100.0) if bad_pix >= 1 else int(toa_act * bad_pix)
+        n_dead = int(toa_act * dead_pix / 100.0) if dead_pix >= 1 else int(toa_act * dead_pix)
+
+        # Calculate evenly distributed steps
+        step_bad = int(toa_act / n_bad) if n_bad > 0 else toa_act
+        step_dead = int(toa_act / n_dead) if n_dead > 0 else toa_act
+
+        # Assign index locations in the across-track direction
+        idx_bad = list(range(5, toa_act, step_bad)) if n_bad > 0 else []
+        idx_dead = list(range(0, toa_act, step_dead)) if n_dead > 0 else []
+
+        # Apply the reduction factor to the DNs
+        if idx_bad:
+            toa[:, idx_bad] *= (1.0 - bad_pix_red)
+        if idx_dead:
+            toa[:, idx_dead] *= (1.0 - dead_pix_red)
+
+        # Save the indices to an ASCII text file for validation
+        os.makedirs(self.outdir, exist_ok=True)
+        idx_file_path = os.path.join(self.outdir, 'bad_dead_pixels_indices.txt')
+        with open(idx_file_path, 'w') as f:
+            f.write(f"Bad pixel indices: {idx_bad}\n")
+            f.write(f"Dead pixel indices: {idx_dead}\n")
 
         return toa
 
