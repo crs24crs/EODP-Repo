@@ -146,32 +146,36 @@ class detectionPhase(initIsm):
         :return: toa in e- including bad & dead pixels
         """
         #TODO
+        #Get the number of pixels in the across-track direction
         toa_act = toa.shape[1]
 
         # Calculate the number of pixels affected
-        n_bad = int(toa_act * bad_pix / 100.0) if bad_pix >= 1 else int(toa_act * bad_pix)
-        n_dead = int(toa_act * dead_pix / 100.0) if dead_pix >= 1 else int(toa_act * dead_pix)
+        n_bad = int(toa_act * (bad_pix / 100.0))
+        n_dead = int(toa_act * (dead_pix / 100.0))
 
-        # Calculate evenly distributed steps
-        step_bad = int(toa_act / n_bad) if n_bad > 0 else toa_act
-        step_dead = int(toa_act / n_dead) if n_dead > 0 else toa_act
+        # Determine evenly distributed steps and apply to the CCD
+        idx_bad = []
+        if n_bad > 0:
+            step_bad = int(toa_act / n_bad)
+            # Distribute evenly in the CCD starting at index 5
+            idx_bad = range(5, toa_act, step_bad)
+            # Apply the reduction factor to the DNs directly
+            toa[:, idx_bad] *= bad_pix_red
 
-        # Assign index locations in the across-track direction
-        idx_bad = list(range(5, toa_act, step_bad)) if n_bad > 0 else []
-        idx_dead = list(range(0, toa_act, step_dead)) if n_dead > 0 else []
+        idx_dead = []
+        if n_dead > 0:
+            step_dead = int(toa_act / n_dead)
+            # Distribute evenly in the CCD starting at index 0
+            idx_dead = range(0, toa_act, step_dead)
+            # Apply the reduction factor to the DNs directly
+            toa[:, idx_dead] *= dead_pix_red
 
-        # Apply the reduction factor to the DNs
-        if idx_bad:
-            toa[:, idx_bad] *= (1.0 - bad_pix_red)
-        if idx_dead:
-            toa[:, idx_dead] *= (1.0 - dead_pix_red)
-
-        # Save the indices to an ASCII text file for validation
+        # Save to file the indexes for validation purposes
+        import os
         os.makedirs(self.outdir, exist_ok=True)
-        idx_file_path = os.path.join(self.outdir, 'bad_dead_pixels_indices.txt')
-        with open(idx_file_path, 'w') as f:
-            f.write(f"Bad pixel indices: {idx_bad}\n")
-            f.write(f"Dead pixel indices: {idx_dead}\n")
+        with open(os.path.join(self.outdir, 'bad_dead_indexes.txt'), 'w') as f:
+            f.write(f"Bad pixel indexes: {list(idx_bad)}\n")
+            f.write(f"Dead pixel indexes: {list(idx_dead)}\n")
 
         return toa
 
