@@ -161,7 +161,7 @@ class detectionPhase(initIsm):
         # Model PRNU for each pixel in the ACT direction using a standard normal distribution
         prnu_act = np.random.normal(loc=0.0, scale=1.0, size=ncolumns) * kprnu
 
-        # Apply the error to the TOA image
+        # Apply the error to the whole TOA image
         toa = toa * (1 + prnu_act)
 
         return toa
@@ -179,4 +179,18 @@ class detectionPhase(initIsm):
         :return: TOA in [e-] with dark signal
         """
         #TODO
+        ncolumns = toa.shape[1]
+
+        # Compute DSNU
+        dsnu_act = np.abs(np.random.normal(loc=0.0, scale=1.0, size=ncolumns)) * kdsnu
+
+        # Compute Sd
+        sd = ds_A_coeff * ((T / Tref) ** 3) * np.exp(-ds_B_coeff * ((1.0 / T) - (1.0 / Tref)))
+
+        # Compute total Dark Signal changes per pixel along the ACT direction
+        ds_act = sd * (1.0 + dsnu_act)
+
+        # Add the Dark Signal to the TOA
+        toa = toa + ds_act
+
         return toa
