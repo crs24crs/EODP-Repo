@@ -124,6 +124,14 @@ class detectionPhase(initIsm):
         :return: toa in electrons
         """
         #TODO
+        #Convert from photons to electrons with QE
+        toae = toa * QE
+
+        # Check that the number of electrons is lower than the FWC
+        if hasattr(self.ismConfig, 'FWC') and self.ismConfig.FWC is not None:
+            if np.any(toae > self.ismConfig.FWC):
+                self.logger.warning("Warning: Some pixels exceed the Full Well Capacity (FWC) limit.")
+
         return toae
 
     def badDeadPixels(self, toa,bad_pix,dead_pix,bad_pix_red,dead_pix_red):
