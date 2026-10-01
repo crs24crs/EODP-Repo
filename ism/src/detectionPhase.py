@@ -160,7 +160,7 @@ class detectionPhase(initIsm):
             # Distribute evenly in the CCD starting at index 5
             idx_bad = range(5, toa_act, step_bad)
             # Apply the reduction factor to the DNs directly
-            toa[:, idx_bad] *= bad_pix_red
+            toa[:, idx_bad] *= (1.0 - bad_pix_red)
 
         idx_dead = []
         if n_dead > 0:
