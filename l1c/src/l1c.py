@@ -10,6 +10,7 @@ from scipy.interpolate import bisplrep, bisplev
 import matplotlib.pyplot as plt
 from common.io.l1cProduct import writeL1c
 from matplotlib import cm
+import geopy
 
 class l1c(initL1c):
 
