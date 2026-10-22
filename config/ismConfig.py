@@ -13,7 +13,7 @@ class ismConfig:
         #self.t_int = 0.00672                     # [s] Integration time
 
         self.pix_size = 42e-6                    # [m] Pixel size in microns for the MS channels
-        self.t_int = 0.00428                     # [s] Integration time
+        self.t_int = 0.0428                     # [s] Integration time
 
 
         # Optical system
@@ -83,6 +83,6 @@ class ismConfig:
         # Optical stage. Use the PSF convolution. If False, will use the MTF
         self.do_psf_conv = False
         # Detection stage errors and effects
-        self.apply_prnu = True
-        self.apply_dark_signal = True
-        self.apply_bad_dead = True
+        self.apply_prnu = False
+        self.apply_dark_signal = False
+        self.apply_bad_dead = False
