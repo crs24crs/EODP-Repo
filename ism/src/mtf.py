@@ -245,6 +245,8 @@ class mtf:
         plt.plot(fnAct, Hmotion[id_alt, :], label='Motion blur MTF', linewidth=1)
         plt.plot(fnAct, Hsys[id_alt, :], label='System MTF', color='black', linewidth=2)
         plt.axvline(x=0.5, color='black', linestyle='--', label='f Nyquist', linewidth=1.5)
+        plt.xlim(0.0, 0.52)
+        plt.ylim(-0.05, 1.05)
 
         plt.title(f'System MTF - slice ACT ({band})')
         plt.xlabel('Spatial frequencies f/(1/w) [-]')
@@ -268,6 +270,8 @@ class mtf:
         plt.plot(fnAlt, Hmotion[:, id_act], label='Motion blur MTF', linewidth=1)
         plt.plot(fnAlt, Hsys[:, id_act], label='System MTF', color='black', linewidth=2)
         plt.axvline(x=0.5, color='black', linestyle='--', label='f Nyquist', linewidth=1.5)
+        plt.xlim(0.0, 0.52)
+        plt.ylim(-0.05, 1.05)
 
         plt.title(f'System MTF - slice ALT ({band})')
         plt.xlabel('Spatial frequencies f/(1/w) [-]')
